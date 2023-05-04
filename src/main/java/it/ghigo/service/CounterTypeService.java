@@ -35,6 +35,17 @@ public class CounterTypeService {
 		ct.setDescription(ctDTO.description());
 		ct.setSeq(ctDTO.seq());
 		counterTypeRepository.save(ct);
+		//
+		compactSequence();
+	}
+
+	private void compactSequence() {
+		int seq = 1;
+		List<CounterType> ctList = counterTypeRepository.findAllByOrderBySeqAsc();
+		for (CounterType ct : ctList) {
+			ct.setSeq(seq++);
+			counterTypeRepository.save(ct);
+		}
 	}
 
 	public CounterTypeDTO getDTO(CounterType ct) {
@@ -48,5 +59,7 @@ public class CounterTypeService {
 		if (counterRepository.countByCounterTypeId(id) > 0)
 			throw new Exception("Counter type ID: " + id + " used");
 		counterTypeRepository.delete(ctOpt.get());
+		//
+		compactSequence();
 	}
 }
