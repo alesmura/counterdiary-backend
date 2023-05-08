@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import it.ghigo.dto.CounterTypeDTO;
+import it.ghigo.model.Counter;
 import it.ghigo.model.CounterType;
 import it.ghigo.repository.CounterRepository;
 import it.ghigo.repository.CounterTypeRepository;
@@ -56,10 +57,13 @@ public class CounterTypeService {
 		Optional<CounterType> ctOpt = counterTypeRepository.findById(id);
 		if (!ctOpt.isPresent())
 			throw new Exception("Counter type ID: " + id + " not found");
-		if (counterRepository.countByCounterTypeId(id) > 0)
-			throw new Exception("Counter type ID: " + id + " used");
+		// Delete counter by type
+		List<Counter> counterList = counterRepository.findByCounterTypeId(id);
+		for (Counter c : counterList)
+			counterRepository.delete(c);
+		// Delete counter type
 		counterTypeRepository.delete(ctOpt.get());
-		//
+		// Compact sequence
 		compactSequence();
 	}
 }
