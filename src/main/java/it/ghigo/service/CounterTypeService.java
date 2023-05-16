@@ -49,6 +49,13 @@ public class CounterTypeService {
 		}
 	}
 
+	public CounterTypeDTO getDTO(Long id) throws Exception {
+		Optional<CounterType> ctOpt = counterTypeRepository.findById(id);
+		if (!ctOpt.isPresent())
+			throw new Exception("Counter type ID: " + id + " not found");
+		return getDTO(ctOpt.get());
+	}
+
 	public CounterTypeDTO getDTO(CounterType ct) {
 		return new CounterTypeDTO(ct.getId(), ct.getSeq(), ct.getName(), ct.getDescription());
 	}

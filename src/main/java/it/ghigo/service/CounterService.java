@@ -49,7 +49,7 @@ public class CounterService {
 	public void updateCounter(CounterDTO cDTO) throws Exception {
 		Optional<Counter> cOpt = counterRepository.findById(cDTO.id());
 		if (!cOpt.isPresent())
-			throw new Exception("Counter not found!");
+			throw new Exception("Counter " + cDTO.id() + " not found!");
 		Counter c = cOpt.get();
 		c.setCounter(cDTO.counter());
 		counterRepository.save(c);
